@@ -1,7 +1,12 @@
-import csv
 import datetime as dt
+import csv
+from pathlib import Path
 
-from pep_parse.constants import ARG
+BASE_DIR = Path(__file__).parent.parent
+ENCODING = 'utf-8'
+DATETIME = '%Y-%m-%d_%H-%M-%S'
+DIR_SAVE = 'results'
+STATUS = 'status'
 
 
 class PepParsePipeline:
@@ -12,18 +17,18 @@ class PepParsePipeline:
         pass
 
     def process_item(self, item, spider):
-        status = self.statuses.get(item[ARG.STATUS], 0) + 1
-        self.statuses[item[ARG.STATUS]] = status
+        status = self.statuses.get(item[STATUS], 0) + 1
+        self.statuses[item[STATUS]] = status
         return item
 
     def close_spider(self, spider):
 
-        res_dir = ARG.DIR_SAVE
+        res_dir = BASE_DIR / DIR_SAVE
         res_dir.mkdir(exist_ok=True)
 
-        time = dt.datetime.now().strftime(ARG.DATETIME)
+        time = dt.datetime.now().strftime(DATETIME)
         filename = res_dir / f'status_summary_{time}.csv'
-        with open(filename, mode='w', encoding=ARG.ENCODING, newline='') as f:
+        with open(filename, mode='w', encoding=ENCODING, newline='') as f:
             writer = csv.writer(f)
             writer.writerow(('Статус', 'Количество'))
             for status, count in self.statuses.items():
