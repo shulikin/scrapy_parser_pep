@@ -13,11 +13,11 @@ STATUS = 'status'
 SLASH = '/'
 
 BOT_NAME = 'pep_parse'
-NEWSPIDER_MODULE = BOT_NAME + '.spiders'
+NEWSPIDER_MODULE = f'{BOT_NAME}.spiders'
 SPIDER_MODULES = [NEWSPIDER_MODULE]
 ROBOTSTXT_OBEY = True
 FEEDS = {
-    DIR_SAVE + '/pep_%(time)s.csv': {
+    f'{DIR_SAVE}/pep_%(time)s.csv': {
         'format': 'csv',
         'encoding': ENCODING,
         'store_empty': False,
