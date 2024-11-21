@@ -1,23 +1,7 @@
 from pathlib import Path
 
-BOT_NAME = 'pep_parse'
-SPIDER_MODULES = ['pep_parse.spiders']
-NEWSPIDER_MODULE = 'pep_parse.spiders'
-ROBOTSTXT_OBEY = True
-FEEDS = {
-    'results/pep_%(time)s.csv': {
-        'format': 'csv',
-        'encoding': 'utf8',
-        'store_empty': False,
-        'fields': ['number', 'name', 'status'],
-    },
-}
-ITEM_PIPELINES = {
-    'pep_parse.pipelines.PepParsePipeline': 300,
-}
-
 ALLOWED_DOMAIN = 'peps.python.org'
-START_URL = 'https://peps.python.org/'
+PROTOCOL = 'https://'
 STATUS_SELECTOR = 'abbr::text'
 TABLE_SELECTOR = 'table a::attr(href)'
 TITLE_SELECTOR = 'h1.page-title::text'
@@ -26,3 +10,20 @@ ENCODING = 'utf-8'
 DATETIME = '%Y-%m-%d_%H-%M-%S'
 DIR_SAVE = 'results'
 STATUS = 'status'
+SLASH = '/'
+
+BOT_NAME = 'pep_parse'
+NEWSPIDER_MODULE = BOT_NAME + '.spiders'
+SPIDER_MODULES = [NEWSPIDER_MODULE]
+ROBOTSTXT_OBEY = True
+FEEDS = {
+    DIR_SAVE + '/pep_%(time)s.csv': {
+        'format': 'csv',
+        'encoding': ENCODING,
+        'store_empty': False,
+        'fields': ['number', 'name', 'status'],
+    },
+}
+ITEM_PIPELINES = {
+    'pep_parse.pipelines.PepParsePipeline': 300,
+}
