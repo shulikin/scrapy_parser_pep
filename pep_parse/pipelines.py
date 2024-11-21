@@ -1,36 +1,36 @@
 import datetime as dt
 import csv
-from pathlib import Path
+from collections import defaultdict
 
-BASE_DIR = Path(__file__).parent.parent
-ENCODING = 'utf-8'
-DATETIME = '%Y-%m-%d_%H-%M-%S'
-DIR_SAVE = 'results'
-STATUS = 'status'
+from pep_parse.settings import (
+    BASE_DIR,
+    ENCODING,
+    DATETIME,
+    DIR_SAVE,
+    STATUS,
+)
 
 
 class PepParsePipeline:
-
-    statuses = {}
+    def __init__(self):
+        self.res_dir = BASE_DIR / DIR_SAVE
+        self.res_dir.mkdir(exist_ok=True)
 
     def open_spider(self, spider):
-        pass
+        self.status_count = defaultdict(int)
 
     def process_item(self, item, spider):
-        status = self.statuses.get(item[STATUS], 0) + 1
-        self.statuses[item[STATUS]] = status
+        self.status_count[item[STATUS]] += 1
         return item
 
     def close_spider(self, spider):
-
-        res_dir = BASE_DIR / DIR_SAVE
-        res_dir.mkdir(exist_ok=True)
-
         time = dt.datetime.now().strftime(DATETIME)
-        filename = res_dir / f'status_summary_{time}.csv'
+        filename = self.res_dir / f'status_summary_{time}.csv'
+        rows = [('Статус', 'Количество')]
+        rows.extend(
+            (status, count) for status, count in self.status_count.items()
+        )
+        rows.append(('Total', sum(self.status_count.values())))
         with open(filename, mode='w', encoding=ENCODING, newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(('Статус', 'Количество'))
-            for status, count in self.statuses.items():
-                writer.writerow((status, count))
-            writer.writerow(('Total', sum(self.statuses.values())))
+            writer.writerows(rows)

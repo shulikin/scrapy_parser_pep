@@ -2,11 +2,13 @@ import scrapy
 
 from pep_parse.items import PepParseItem
 
-ALLOWED_DOMAIN = 'peps.python.org'
-START_URL = 'https://peps.python.org/'
-STATUS_SELECTOR = 'abbr::text'
-TABLE_SELECTOR = 'table a::attr(href)'
-TITLE_SELECTOR = 'h1.page-title::text'
+from pep_parse.settings import (
+    ALLOWED_DOMAIN,
+    START_URL,
+    STATUS_SELECTOR,
+    TABLE_SELECTOR,
+    TITLE_SELECTOR,
+)
 
 
 class PepSpider(scrapy.Spider):
